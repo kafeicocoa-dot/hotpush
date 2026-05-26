@@ -1,8 +1,8 @@
 <template>
     <div>
         <!-- Add Custom Source Button (Admin Only) -->
-        <div v-if="isAdmin" class="mb-4 flex justify-end">
-            <div class="action-container inline-flex p-1.5 rounded-xl">
+        <div v-if="isAdmin" class="mb-4 flex justify-stretch sm:justify-end">
+            <div class="action-container inline-flex w-full p-1.5 rounded-xl sm:w-auto">
                 <button @click="openAddSourceModal" class="action-chip">
                     <i class="fas fa-plus mr-2"></i>添加自定义源
                 </button>
@@ -11,15 +11,15 @@
 
         <!-- Custom Sources -->
         <div v-if="customSources.length > 0" class="glass rounded-2xl overflow-hidden mb-6">
-            <div class="p-6 border-b border-white/10 flex items-center justify-between">
+            <div class="p-4 border-b border-white/10 flex items-center justify-between md:p-6">
                 <div>
                     <h3 class="font-bold text-xl text-white">自定义数据源</h3>
                     <p class="text-gray-500 text-sm mt-2">您添加的自定义 RSS 数据源</p>
                 </div>
             </div>
             <div class="divide-y divide-white/5">
-                <div v-for="source in customSources" :key="source.id" class="p-5 flex items-center justify-between hover:bg-white/5 transition">
-                    <div class="flex items-center space-x-4">
+                <div v-for="source in customSources" :key="source.id" class="p-4 flex flex-col gap-3 hover:bg-white/5 transition sm:flex-row sm:items-center sm:justify-between md:p-5">
+                    <div class="flex min-w-0 items-center space-x-4">
                         <div :class="['w-10 h-10 rounded-xl flex items-center justify-center', source.enabled ? 'bg-amber-500/20' : 'bg-white/5']">
                             <i class="fas fa-rss" :class="source.enabled ? 'text-amber-300' : 'text-gray-500'"></i>
                         </div>
@@ -28,7 +28,7 @@
                             <div class="text-xs text-gray-500 font-mono truncate max-w-xs">{{ source.url }}</div>
                         </div>
                     </div>
-                    <div class="flex items-center space-x-3">
+                    <div class="flex items-center gap-3 sm:flex-shrink-0">
                         <span :class="['text-xs px-3 py-1.5 rounded-full font-medium border', source.enabled ? 'bg-amber-500/25 text-amber-300 border-amber-500/40' : 'bg-gray-500/20 text-gray-400 border-gray-500/30']">
                             {{ source.enabled ? '已启用' : '已禁用' }}
                         </span>
@@ -53,7 +53,7 @@
 
         <!-- Builtin Sources -->
         <div class="glass rounded-2xl overflow-hidden">
-            <div class="p-6 border-b border-white/10">
+            <div class="p-4 border-b border-white/10 md:p-6">
                 <h3 class="font-bold text-xl text-white">内置数据源</h3>
                 <p class="text-gray-500 text-sm mt-2">当前已配置 {{ builtinSources.length }} 个内置数据源</p>
             </div>
@@ -63,10 +63,10 @@
             </div>
             <div v-else class="divide-y divide-white/5">
                 <div v-for="(sourceList, category) in sourcesByCategory" :key="category">
-                    <div class="px-6 py-3 bg-white/5 font-medium text-gray-400 text-sm flex items-center">
+                    <div class="px-4 py-3 bg-white/5 font-medium text-gray-400 text-sm flex items-center md:px-6">
                         <i class="fas fa-folder-open mr-2 text-orange-400"></i>{{ category }}
                     </div>
-                    <div v-for="source in sourceList" :key="source.id" class="p-5 flex items-center justify-between hover:bg-white/5 transition">
+                    <div v-for="source in sourceList" :key="source.id" class="p-4 flex items-center justify-between gap-3 hover:bg-white/5 transition md:p-5">
                         <div class="flex items-center space-x-4">
                             <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500/10 to-red-500/10 flex items-center justify-center">
                                 <img
@@ -90,14 +90,14 @@
 
         <!-- Add/Edit Source Modal -->
         <div v-if="showSourceModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div class="glass rounded-2xl w-full max-w-md overflow-hidden">
-                <div class="p-6 border-b border-white/10 flex items-center justify-between">
+            <div class="glass max-h-[90vh] w-full max-w-md overflow-y-auto rounded-2xl">
+                <div class="p-4 border-b border-white/10 flex items-center justify-between md:p-6">
                     <h3 class="font-bold text-xl text-white">{{ editingSource ? '编辑数据源' : '添加自定义源' }}</h3>
                     <button @click="closeSourceModal" class="text-gray-500 hover:text-white transition w-8 h-8 rounded-lg hover:bg-white/10 flex items-center justify-center">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
-                <form @submit.prevent="saveSource" class="p-6 space-y-5">
+                <form @submit.prevent="saveSource" class="p-4 space-y-5 md:p-6">
                     <div>
                         <label class="block text-sm font-medium text-gray-400 mb-2">源 ID</label>
                         <input
@@ -145,7 +145,7 @@
                         </label>
                     </div>
                 </form>
-                <div class="p-6 border-t border-white/10 flex justify-end space-x-3">
+                <div class="p-4 border-t border-white/10 flex justify-end space-x-3 md:p-6">
                     <button
                         @click="closeSourceModal"
                         class="px-5 py-2.5 text-gray-400 hover:text-white hover:bg-white/10 rounded-xl transition"

@@ -1,8 +1,8 @@
 <template>
     <div>
         <!-- Time Range Selector -->
-        <div class="flex items-center justify-between mb-6">
-            <div class="category-container rounded-xl p-2 inline-flex gap-2">
+        <div class="flex items-center justify-between mb-4 md:mb-6">
+            <div class="category-container rounded-xl p-2 inline-flex gap-2 overflow-x-auto">
                 <button
                     v-for="range in timeRanges"
                     :key="range.value"
@@ -15,7 +15,7 @@
         </div>
 
         <!-- Platform Overview -->
-        <div class="glass rounded-xl p-6 mb-6">
+        <div class="glass rounded-xl p-4 mb-4 md:p-6 md:mb-6">
             <h3 class="text-white font-semibold mb-4">
                 <i class="fas fa-chart-bar text-amber-400 mr-2"></i>各平台热搜数量
             </h3>
@@ -27,13 +27,13 @@
                 <i class="fas fa-chart-bar text-gray-600 text-3xl mb-3 block"></i>
                 暂无数据，等待首次抓取后即可查看趋势
             </div>
-            <div v-else class="chart-container" style="height: 280px;">
+            <div v-else class="chart-container h-[240px] md:h-[280px]">
                 <Bar :data="overviewChartData" :options="overviewChartOptions" />
             </div>
         </div>
 
         <!-- Top Trending Items -->
-        <div class="glass rounded-xl p-6 mb-6">
+        <div class="glass rounded-xl p-4 mb-4 md:p-6 md:mb-6">
             <h3 class="text-white font-semibold mb-4">
                 <i class="fas fa-fire text-orange-400 mr-2"></i>热度排行
             </h3>
@@ -49,7 +49,7 @@
                 <div
                     v-for="(item, index) in topItems"
                     :key="item.item_id"
-                    class="flex items-center space-x-3 p-3 rounded-lg hover:bg-white/5 transition cursor-pointer"
+                    class="flex items-start gap-3 p-3 rounded-lg hover:bg-white/5 transition cursor-pointer sm:items-center"
                     @click="viewItemTrend(item)"
                 >
                     <div :class="[
@@ -64,7 +64,7 @@
                             {{ item.source_name }} · 出现 {{ item.appearances }} 次 · 最高第 {{ item.best_rank }} 名
                         </div>
                     </div>
-                    <div class="text-xs text-gray-500 flex-shrink-0">
+                    <div class="text-xs text-gray-500 flex-shrink-0 pt-1 sm:pt-0">
                         平均 #{{ item.avg_rank }}
                     </div>
                 </div>
@@ -72,15 +72,15 @@
         </div>
 
         <!-- Ranking Trend Chart -->
-        <div class="glass rounded-xl p-6">
-            <div class="flex items-center justify-between mb-4">
+        <div class="glass rounded-xl p-4 md:p-6">
+            <div class="flex flex-col gap-3 mb-4 sm:flex-row sm:items-center sm:justify-between">
                 <h3 class="text-white font-semibold">
                     <i class="fas fa-chart-line text-blue-400 mr-2"></i>排名变化趋势
                 </h3>
                 <select
                     v-model="selectedSource"
                     @change="loadRankingTrend"
-                    class="bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-sm text-white outline-none focus:ring-2 focus:ring-amber-500/50"
+                    class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white outline-none focus:ring-2 focus:ring-amber-500/50 sm:w-auto sm:py-1.5"
                 >
                     <option value="" disabled>选择平台</option>
                     <option v-for="s in availableSources" :key="s.id" :value="s.id">
@@ -100,14 +100,14 @@
                 <i class="fas fa-chart-line text-gray-600 text-3xl mb-3 block"></i>
                 该平台暂无趋势数据
             </div>
-            <div v-else class="chart-container" style="height: 500px;">
+            <div v-else class="chart-container h-[320px] md:h-[500px]">
                 <Line :data="rankingChartData" :options="rankingChartOptions" />
             </div>
         </div>
 
         <!-- Item Trend Modal -->
         <div v-if="showItemModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50" @click.self="showItemModal = false">
-            <div class="glass rounded-2xl p-6 w-full max-w-2xl mx-4">
+            <div class="glass max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl p-4 mx-4 md:p-6">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-lg font-semibold text-white truncate pr-4">{{ selectedItem?.title }}</h3>
                     <button @click="showItemModal = false" class="text-gray-500 hover:text-white transition flex-shrink-0">
@@ -120,7 +120,7 @@
                 <div v-else-if="itemTrendData.length === 0" class="text-center py-8 text-gray-500 text-sm">
                     暂无趋势数据
                 </div>
-                <div v-else class="chart-container" style="height: 300px;">
+                <div v-else class="chart-container h-[260px] md:h-[300px]">
                     <Line :data="itemTrendChartData" :options="itemTrendChartOptions" />
                 </div>
             </div>

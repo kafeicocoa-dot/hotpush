@@ -1,28 +1,28 @@
 <template>
     <div>
         <!-- Stats Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-            <div class="glass rounded-xl p-5 text-center">
-                <div class="text-3xl font-bold text-white">{{ historyStats.total || 0 }}</div>
+        <div class="grid grid-cols-2 gap-3 mb-4 md:grid-cols-4 md:gap-4 md:mb-8">
+            <div class="glass rounded-xl p-4 text-center md:p-5">
+                <div class="text-2xl font-bold text-white md:text-3xl">{{ historyStats.total || 0 }}</div>
                 <div class="text-sm text-gray-500 mt-1">总推送次数</div>
             </div>
-            <div class="glass rounded-xl p-5 text-center">
-                <div class="text-3xl font-bold text-green-400">{{ historyStats.success || 0 }}</div>
+            <div class="glass rounded-xl p-4 text-center md:p-5">
+                <div class="text-2xl font-bold text-green-400 md:text-3xl">{{ historyStats.success || 0 }}</div>
                 <div class="text-sm text-gray-500 mt-1">成功</div>
             </div>
-            <div class="glass rounded-xl p-5 text-center">
-                <div class="text-3xl font-bold text-red-400">{{ historyStats.failed || 0 }}</div>
+            <div class="glass rounded-xl p-4 text-center md:p-5">
+                <div class="text-2xl font-bold text-red-400 md:text-3xl">{{ historyStats.failed || 0 }}</div>
                 <div class="text-sm text-gray-500 mt-1">失败</div>
             </div>
-            <div class="glass rounded-xl p-5 text-center">
-                <div class="text-3xl font-bold text-amber-300">{{ historyStats.success_rate || 0 }}%</div>
+            <div class="glass rounded-xl p-4 text-center md:p-5">
+                <div class="text-2xl font-bold text-amber-300 md:text-3xl">{{ historyStats.success_rate || 0 }}%</div>
                 <div class="text-sm text-gray-500 mt-1">成功率</div>
             </div>
         </div>
 
         <!-- History List -->
         <div class="glass rounded-2xl overflow-hidden">
-            <div class="p-6 border-b border-white/10 flex items-center justify-between">
+            <div class="p-4 border-b border-white/10 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between md:p-6">
                 <div>
                     <h3 class="font-bold text-xl text-white">推送历史</h3>
                     <p class="text-gray-500 text-sm mt-2">最近的推送记录</p>
@@ -44,9 +44,9 @@
                 <p class="text-gray-500">暂无推送记录</p>
             </div>
             <div v-else class="divide-y divide-white/5">
-                <div v-for="item in pushHistory" :key="item.id" class="p-5 hover:bg-white/5 transition">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center space-x-4">
+                <div v-for="item in pushHistory" :key="item.id" class="p-4 hover:bg-white/5 transition md:p-5">
+                    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                        <div class="flex items-start space-x-4 sm:items-center">
                             <div :class="['w-10 h-10 rounded-xl flex items-center justify-center', item.status === 'success' ? 'bg-amber-500/20' : 'bg-red-500/20']">
                                 <i :class="['text-lg', item.status === 'success' ? 'fas fa-check text-amber-300' : 'fas fa-times text-red-400']"></i>
                             </div>
@@ -59,7 +59,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="text-sm text-gray-500">
+                        <div class="text-sm text-gray-500 sm:text-right">
                             {{ formatDateTime(item.pushed_at) }}
                         </div>
                     </div>
@@ -69,7 +69,7 @@
                 </div>
             </div>
             <!-- Pagination -->
-            <div v-if="historyTotal > historyLimit" class="p-4 border-t border-white/10 flex items-center justify-between">
+            <div v-if="historyTotal > historyLimit" class="p-4 border-t border-white/10 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div class="text-sm text-gray-500">共 {{ historyTotal }} 条记录</div>
                 <div class="flex items-center space-x-2">
                     <button

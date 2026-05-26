@@ -1,9 +1,9 @@
 <template>
-    <aside class="w-60 glass border-r border-white/5 flex flex-col">
+    <aside class="w-full glass border-b border-white/5 flex flex-col md:h-screen md:w-60 md:flex-shrink-0 md:border-b-0 md:border-r">
         <!-- Logo -->
-        <div class="p-6">
+        <div class="p-4 md:p-6">
             <div class="flex items-center space-x-3">
-                <span class="text-3xl">🔥</span>
+                <span class="text-2xl md:text-3xl">🔥</span>
                 <div>
                     <h1 class="text-lg font-bold text-white">HotPush</h1>
                     <p class="text-xs text-gray-500">热点聚合推送平台</p>
@@ -12,13 +12,13 @@
         </div>
 
         <!-- Navigation -->
-        <nav class="flex-1 px-3 space-y-1">
+        <nav class="mobile-nav-scroll flex gap-2 overflow-x-auto px-3 pb-3 md:block md:flex-1 md:space-y-1 md:overflow-visible md:pb-0">
             <RouterLink
                 v-for="item in visibleMenuItems"
                 :key="item.path"
                 :to="item.path"
                 :class="[
-                    'sidebar-item w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition',
+                    'sidebar-item flex flex-shrink-0 items-center space-x-3 rounded-xl px-4 py-3 transition md:w-full',
                     isActive(item.path) ? 'active' : 'hover:bg-white/5'
                 ]"
             >
@@ -32,7 +32,7 @@
         </nav>
 
         <!-- Stats -->
-        <div v-if="authStore.isAuthenticated" class="p-4 border-t border-white/5">
+        <div v-if="authStore.isAuthenticated" class="hidden p-4 border-t border-white/5 md:block">
             <div class="grid grid-cols-2 gap-2 text-center">
                 <div class="glass rounded-lg p-3">
                     <div class="text-lg font-bold text-white">{{ appStore.stats?.sources_count || 0 }}</div>
@@ -46,7 +46,7 @@
         </div>
 
         <!-- User Info -->
-        <div v-if="authStore.isAuthenticated" class="p-4 border-t border-white/5">
+        <div v-if="authStore.isAuthenticated" class="hidden p-4 border-t border-white/5 md:block">
             <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-3">
                     <div class="w-9 h-9 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 flex items-center justify-center text-white font-bold text-sm">
@@ -68,7 +68,7 @@
         </div>
 
         <!-- Footer -->
-        <div class="p-4 border-t border-white/5 text-center">
+        <div class="hidden p-4 border-t border-white/5 text-center md:block">
             <a href="https://github.com/JackyST0/hotpush" target="_blank" class="text-xs text-gray-600 hover:text-gray-400 transition">
                 <i class="fab fa-github mr-1"></i>@JackyST0
             </a>

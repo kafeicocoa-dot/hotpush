@@ -1,13 +1,13 @@
 <template>
     <div class="space-y-6">
         <div class="glass rounded-2xl overflow-hidden">
-            <div class="p-6 border-b border-white/10">
+            <div class="p-4 border-b border-white/10 md:p-6">
                 <h3 class="font-bold text-xl text-white">
                     <i class="fas fa-paper-plane text-orange-400 mr-2"></i>推送渠道
                 </h3>
                 <p class="text-gray-500 text-sm mt-2">配置推送渠道后，新热点将自动推送到对应平台</p>
             </div>
-            <div class="p-6">
+            <div class="p-4 md:p-6">
                 <div v-if="loading" class="text-center py-10 text-gray-400">
                     <i class="fas fa-spinner animate-spin text-2xl"></i>
                     <p class="mt-2">加载中...</p>
@@ -17,7 +17,7 @@
                     <div
                         v-for="channel in channels"
                         :key="channel.id"
-                        class="flex items-center justify-between py-3 border-b border-white/5 last:border-b-0"
+                        class="flex flex-col gap-3 py-3 border-b border-white/5 last:border-b-0 sm:flex-row sm:items-center sm:justify-between"
                     >
                         <div class="flex items-center space-x-4">
                             <div :class="['w-12 h-12 rounded-xl flex items-center justify-center', channel.enabled ? 'bg-amber-500/20' : 'bg-white/5']">
@@ -30,10 +30,10 @@
                                 </div>
                             </div>
                         </div>
-                        <div v-if="isAdmin" class="flex items-center space-x-2">
+                        <div v-if="isAdmin" class="flex w-full items-center gap-2 sm:w-auto">
                             <button
                                 @click="openConfig(channel)"
-                                class="px-4 py-2 text-sm glass rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition flex items-center space-x-2"
+                                class="flex flex-1 items-center justify-center space-x-2 px-4 py-2 text-sm glass rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition sm:flex-none"
                             >
                                 <i class="fas fa-cog"></i>
                                 <span>配置</span>
@@ -42,7 +42,7 @@
                                 v-if="channel.enabled"
                                 @click="testChannelDirect(channel)"
                                 :disabled="testingChannel === channel.id"
-                                class="px-4 py-2 text-sm glass rounded-lg text-amber-400 hover:bg-white/10 transition flex items-center space-x-2"
+                                class="flex flex-1 items-center justify-center space-x-2 px-4 py-2 text-sm glass rounded-lg text-amber-400 hover:bg-white/10 transition sm:flex-none"
                             >
                                 <i :class="testingChannel === channel.id ? 'fas fa-spinner animate-spin' : 'fas fa-paper-plane'"></i>
                                 <span>测试</span>
@@ -55,15 +55,15 @@
 
         <!-- 推送数据源选择 -->
         <div class="glass rounded-2xl overflow-hidden">
-            <div class="p-6 border-b border-white/10">
-                <div class="flex items-center justify-between">
+            <div class="p-4 border-b border-white/10 md:p-6">
+                <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                         <h3 class="font-bold text-xl text-white">
                             <i class="fas fa-filter text-blue-400 mr-2"></i>推送数据源
                         </h3>
                         <p class="text-gray-500 text-sm mt-2">选择需要推送的热榜平台，未选中的平台将不会推送消息</p>
                     </div>
-                    <div v-if="isAdmin && !sourcesLoading" class="flex items-center space-x-2">
+                    <div v-if="isAdmin && !sourcesLoading" class="flex items-center gap-2">
                         <button
                             @click="toggleAllSources"
                             class="px-3 py-1.5 text-xs glass rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition"
@@ -82,7 +82,7 @@
                     </div>
                 </div>
             </div>
-            <div class="p-6">
+            <div class="p-4 md:p-6">
                 <div v-if="sourcesLoading" class="text-center py-8 text-gray-400">
                     <i class="fas fa-spinner animate-spin text-2xl"></i>
                     <p class="mt-2">加载中...</p>
@@ -101,7 +101,7 @@
                             <span class="text-sm font-medium text-gray-300">{{ category }}</span>
                             <span class="text-xs text-gray-500 bg-white/5 px-2 py-0.5 rounded-full">{{ sourceIds.length }}</span>
                         </div>
-                        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
                             <div
                                 v-for="sourceId in sourceIds"
                                 :key="sourceId"
@@ -195,14 +195,14 @@
         <!-- 配置弹窗 -->
         <Teleport to="body">
         <div v-if="showModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[9999] p-4">
-            <div class="glass rounded-2xl w-full max-w-md overflow-hidden">
-                <div class="p-6 border-b border-white/10 flex items-center justify-between">
+            <div class="glass max-h-[90vh] w-full max-w-md overflow-y-auto rounded-2xl">
+                <div class="p-4 border-b border-white/10 flex items-center justify-between md:p-6">
                     <h3 class="font-bold text-xl text-white">{{ editingChannel?.name }} 配置</h3>
                     <button @click="showModal = false" class="text-gray-500 hover:text-white transition w-8 h-8 rounded-lg hover:bg-white/10 flex items-center justify-center">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
-                <div class="p-6 space-y-5">
+                <div class="p-4 space-y-5 md:p-6">
                     <!-- 启用开关 -->
                     <div class="flex items-center justify-between">
                         <span class="text-gray-300">启用推送</span>
@@ -238,7 +238,7 @@
 
                     <!-- 邮件配置 -->
                     <template v-else-if="editingChannel?.id === 'email'">
-                        <div class="grid grid-cols-2 gap-4">
+                        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                             <div>
                                 <label class="block text-sm font-medium text-gray-400 mb-2">SMTP 服务器</label>
                                 <input
@@ -300,7 +300,7 @@
                         </div>
                     </template>
                 </div>
-                <div class="p-6 border-t border-white/10 flex justify-end space-x-3">
+                <div class="p-4 border-t border-white/10 flex justify-end space-x-3 md:p-6">
                     <button
                         @click="showModal = false"
                         class="px-5 py-2.5 text-gray-400 hover:text-white hover:bg-white/10 rounded-xl transition"

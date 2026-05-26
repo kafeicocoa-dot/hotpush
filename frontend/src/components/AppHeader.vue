@@ -1,10 +1,10 @@
 <template>
-    <div class="glass rounded-xl p-4 flex items-center justify-between mb-6">
-        <div>
-            <h2 class="text-2xl font-bold text-white">{{ viewTitle }}</h2>
+    <div class="glass rounded-xl p-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-4 md:mb-6">
+        <div class="min-w-0">
+            <h2 class="text-xl font-bold text-white md:text-2xl">{{ viewTitle }}</h2>
             <p class="text-gray-500 text-sm mt-1">{{ viewSubtitle }}</p>
         </div>
-        <div class="flex items-center space-x-4">
+        <div class="flex flex-wrap items-center gap-2 sm:justify-end">
             <span v-if="lastUpdate" class="text-sm text-gray-500">
                 <i class="far fa-clock mr-1"></i>{{ lastUpdate }}
             </span>

@@ -4,12 +4,12 @@
         <LoginPage v-if="isLoginRoute" @login-success="handleLoginSuccess" />
 
         <!-- Main App -->
-        <div v-else class="flex h-screen">
+        <div v-else class="flex min-h-screen flex-col md:h-screen md:flex-row">
             <!-- Sidebar -->
             <Sidebar @logout="handleLogout" @login="handleLoginClick" />
 
             <!-- Main Content -->
-            <main class="flex-1 overflow-auto p-6">
+            <main class="flex-1 overflow-auto p-3 sm:p-4 md:p-6">
                 <!-- Header -->
                 <AppHeader
                     :view-title="currentRoute?.meta?.title || '热搜榜'"

@@ -196,6 +196,13 @@ html, body {
     border-color: rgba(160, 110, 50, 0.3);
 }
 
+.mobile-nav-scroll {
+    scrollbar-width: none;
+}
+.mobile-nav-scroll::-webkit-scrollbar {
+    display: none;
+}
+
 /* ===== MODE TOGGLE ===== */
 .mode-toggle {
     width: 36px;
@@ -378,4 +385,34 @@ html, body {
 .light-mode .action-container {
     background: rgba(255, 255, 255, 0.4);
     border-color: rgba(0, 0, 0, 0.05);
+}
+
+@media (max-width: 640px) {
+    .card-hover:hover,
+    .hot-item:hover,
+    .action-btn:hover,
+    .mode-toggle:hover {
+        transform: none;
+    }
+
+    .category-container,
+    .action-container {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .category-chip,
+    .action-chip,
+    .action-btn {
+        white-space: nowrap;
+    }
+
+    .action-btn {
+        padding: 8px 12px;
+    }
+
+    .glass {
+        backdrop-filter: blur(12px) saturate(160%);
+        -webkit-backdrop-filter: blur(12px) saturate(160%);
+    }
 }

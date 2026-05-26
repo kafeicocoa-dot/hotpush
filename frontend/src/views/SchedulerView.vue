@@ -1,21 +1,21 @@
 <template>
     <div>
         <!-- Scheduler Status -->
-        <div class="glass rounded-2xl overflow-hidden mb-8">
-            <div class="p-6 border-b border-white/10">
+        <div class="glass rounded-2xl overflow-hidden mb-6 md:mb-8">
+            <div class="p-4 border-b border-white/10 md:p-6">
                 <h3 class="font-bold text-xl text-white">调度器状态</h3>
             </div>
-            <div class="p-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="p-4 md:p-6">
+                <div class="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6">
                     <!-- Status -->
-                    <div class="glass rounded-xl p-5">
+                    <div class="glass rounded-xl p-4 md:p-5">
                         <div class="flex items-center justify-between mb-4">
                             <span class="text-gray-400">运行状态</span>
                             <span :class="['px-3 py-1.5 rounded-full text-sm font-semibold border', schedulerStatus.running ? 'bg-green-500/20 text-green-400 border-green-500/30' : 'bg-red-500/25 text-red-300 border-red-500/40']">
                                 {{ schedulerStatus.running ? '运行中' : (schedulerStatus.paused ? '已暂停' : '已停止') }}
                             </span>
                         </div>
-                        <div v-if="isAdmin" class="flex items-center space-x-3">
+                        <div v-if="isAdmin" class="flex flex-col gap-3 sm:flex-row sm:items-center">
                             <button
                                 v-if="schedulerStatus.paused"
                                 @click="resumeScheduler"
@@ -46,12 +46,12 @@
                     </div>
 
                     <!-- Interval Config -->
-                    <div class="glass rounded-xl p-5">
+                    <div class="glass rounded-xl p-4 md:p-5">
                         <div class="flex items-center justify-between mb-4">
                             <span class="text-gray-400">抓取间隔</span>
                             <span class="text-white font-medium">{{ schedulerStatus.interval_minutes || '-' }} 分钟</span>
                         </div>
-                        <div v-if="isAdmin" class="flex items-center space-x-3">
+                        <div v-if="isAdmin" class="flex flex-col gap-3 sm:flex-row sm:items-center">
                             <input
                                 type="number"
                                 v-model.number="newInterval"
@@ -73,14 +73,14 @@
                 </div>
 
                 <!-- Next Run & Last Run -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-                    <div class="glass rounded-xl p-5">
+                <div class="grid grid-cols-1 gap-4 mt-4 md:grid-cols-2 md:gap-6 md:mt-6">
+                    <div class="glass rounded-xl p-4 md:p-5">
                         <div class="text-gray-400 mb-2">下次执行时间</div>
                         <div class="text-xl font-medium text-white">
                             {{ schedulerStatus.next_run ? formatDateTime(schedulerStatus.next_run) : '-' }}
                         </div>
                     </div>
-                    <div class="glass rounded-xl p-5">
+                    <div class="glass rounded-xl p-4 md:p-5">
                         <div class="text-gray-400 mb-2">上次执行时间</div>
                         <div class="text-xl font-medium text-white">
                             {{ schedulerStatus.last_run ? formatDateTime(schedulerStatus.last_run) : '-' }}
@@ -89,7 +89,7 @@
                 </div>
 
                 <!-- Last Run Result -->
-                <div v-if="schedulerStatus.last_run_result" class="mt-6 glass rounded-xl p-5">
+                <div v-if="schedulerStatus.last_run_result" class="mt-4 glass rounded-xl p-4 md:mt-6 md:p-5">
                     <div class="text-gray-400 mb-3">上次执行结果</div>
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                         <div class="text-center">
@@ -120,8 +120,8 @@
 
         <!-- Daily Digest Config -->
         <div class="glass rounded-2xl overflow-hidden">
-            <div class="p-6 border-b border-white/10">
-                <div class="flex items-center justify-between">
+            <div class="p-4 border-b border-white/10 md:p-6">
+                <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                         <h3 class="font-bold text-xl text-white">
                             <i class="fas fa-newspaper text-orange-400 mr-2"></i>定时摘要
@@ -138,15 +138,15 @@
                     </div>
                 </div>
             </div>
-            <div class="p-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="p-4 md:p-6">
+                <div class="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6">
                     <!-- Time Config -->
-                    <div class="glass rounded-xl p-5">
+                    <div class="glass rounded-xl p-4 md:p-5">
                         <div class="flex items-center justify-between mb-4">
                             <span class="text-gray-400"><i class="fas fa-clock mr-2"></i>推送时间</span>
                             <span class="text-white font-medium">{{ digestStatus.time || '08:00' }}</span>
                         </div>
-                        <div v-if="isAdmin" class="flex items-center space-x-3">
+                        <div v-if="isAdmin" class="flex flex-col gap-3 sm:flex-row sm:items-center">
                             <input
                                 type="time"
                                 v-model="digestForm.time"
@@ -162,12 +162,12 @@
                     </div>
 
                     <!-- Top N Config -->
-                    <div class="glass rounded-xl p-5">
+                    <div class="glass rounded-xl p-4 md:p-5">
                         <div class="flex items-center justify-between mb-4">
                             <span class="text-gray-400"><i class="fas fa-list-ol mr-2"></i>每源条数</span>
                             <span class="text-white font-medium">{{ digestStatus.top_n || 10 }} 条</span>
                         </div>
-                        <div v-if="isAdmin" class="flex items-center space-x-3">
+                        <div v-if="isAdmin" class="flex flex-col gap-3 sm:flex-row sm:items-center">
                             <input
                                 type="number"
                                 v-model.number="digestForm.top_n"
@@ -186,7 +186,7 @@
                 </div>
 
                 <!-- Weekdays Config -->
-                <div class="mt-6 glass rounded-xl p-5">
+                <div class="mt-4 glass rounded-xl p-4 md:mt-6 md:p-5">
                     <div class="text-gray-400 mb-4"><i class="fas fa-calendar-week mr-2"></i>推送日期</div>
                     <div class="flex flex-wrap gap-2">
                         <button
@@ -202,14 +202,14 @@
                 </div>
 
                 <!-- Digest Status -->
-                <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="glass rounded-xl p-5">
+                <div class="mt-4 grid grid-cols-1 gap-4 md:mt-6 md:grid-cols-2">
+                    <div class="glass rounded-xl p-4 md:p-5">
                         <div class="text-gray-400 mb-2">下次推送时间</div>
                         <div class="text-xl font-medium text-white">
                             {{ digestStatus.next_run ? formatDateTime(digestStatus.next_run) : (digestStatus.enabled ? '计算中...' : '未启用') }}
                         </div>
                     </div>
-                    <div class="glass rounded-xl p-5">
+                    <div class="glass rounded-xl p-4 md:p-5">
                         <div class="text-gray-400 mb-2">上次推送时间</div>
                         <div class="text-xl font-medium text-white">
                             {{ digestStatus.last_run ? formatDateTime(digestStatus.last_run) : '从未执行' }}
@@ -218,11 +218,11 @@
                 </div>
 
                 <!-- Manual Trigger -->
-                <div v-if="isAdmin" class="mt-6 flex justify-end">
+                <div v-if="isAdmin" class="mt-4 flex justify-stretch sm:justify-end md:mt-6">
                     <button
                         @click="triggerDigest"
                         :disabled="triggeringDigest"
-                        class="px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-xl hover:opacity-90 transition font-medium disabled:opacity-50"
+                        class="w-full px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-xl hover:opacity-90 transition font-medium disabled:opacity-50 sm:w-auto"
                     >
                         <i :class="['fas mr-2', triggeringDigest ? 'fa-spinner fa-spin' : 'fa-paper-plane']"></i>
                         {{ triggeringDigest ? '推送中...' : '立即推送摘要' }}
@@ -263,9 +263,9 @@
         </div>
 
         <!-- AI Summary Config -->
-        <div class="glass rounded-2xl overflow-hidden mt-8">
-            <div class="p-6 border-b border-white/10">
-                <div class="flex items-center justify-between">
+        <div class="glass rounded-2xl overflow-hidden mt-6 md:mt-8">
+            <div class="p-4 border-b border-white/10 md:p-6">
+                <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                         <h3 class="font-bold text-xl text-white">
                             <i class="fas fa-robot text-orange-400 mr-2"></i>AI 摘要
@@ -282,10 +282,10 @@
                     </div>
                 </div>
             </div>
-            <div class="p-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="p-4 md:p-6">
+                <div class="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6">
                     <!-- Model Config -->
-                    <div class="glass rounded-xl p-5">
+                    <div class="glass rounded-xl p-4 md:p-5">
                         <div class="text-gray-400 mb-3"><i class="fas fa-cube mr-2"></i>模型</div>
                         <div v-if="isAdmin">
                             <input
@@ -302,7 +302,7 @@
                     </div>
 
                     <!-- API Key Config -->
-                    <div class="glass rounded-xl p-5">
+                    <div class="glass rounded-xl p-4 md:p-5">
                         <div class="text-gray-400 mb-3"><i class="fas fa-key mr-2"></i>API Key</div>
                         <div v-if="isAdmin" class="relative">
                             <input
@@ -323,9 +323,9 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                <div class="grid grid-cols-1 gap-4 mt-4 md:grid-cols-2 md:gap-6 md:mt-6">
                     <!-- Base URL Config -->
-                    <div class="glass rounded-xl p-5">
+                    <div class="glass rounded-xl p-4 md:p-5">
                         <div class="text-gray-400 mb-3"><i class="fas fa-link mr-2"></i>API 地址（可选）</div>
                         <div v-if="isAdmin">
                             <input
@@ -339,7 +339,7 @@
                     </div>
 
                     <!-- Summary Style -->
-                    <div class="glass rounded-xl p-5">
+                    <div class="glass rounded-xl p-4 md:p-5">
                         <div class="text-gray-400 mb-3"><i class="fas fa-palette mr-2"></i>摘要风格</div>
                         <div v-if="isAdmin" class="flex flex-wrap gap-2">
                             <button
@@ -356,11 +356,11 @@
                 </div>
 
                 <!-- Save Button -->
-                <div v-if="isAdmin" class="mt-6 flex justify-end">
+                <div v-if="isAdmin" class="mt-4 flex justify-stretch sm:justify-end md:mt-6">
                     <button
                         @click="saveAIConfig"
                         :disabled="savingAI"
-                        class="px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-xl hover:opacity-90 transition font-medium disabled:opacity-50"
+                        class="w-full px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-xl hover:opacity-90 transition font-medium disabled:opacity-50 sm:w-auto"
                     >
                         <i :class="['fas mr-2', savingAI ? 'fa-spinner fa-spin' : 'fa-save']"></i>
                         {{ savingAI ? '保存中...' : '保存配置' }}

@@ -2,7 +2,7 @@
     <div>
         <!-- Users List -->
         <div class="glass rounded-2xl overflow-hidden">
-            <div class="p-6 border-b border-white/10">
+            <div class="p-4 border-b border-white/10 md:p-6">
                 <h3 class="font-bold text-xl text-white">用户管理</h3>
                 <p class="text-gray-500 text-sm mt-2">管理系统用户和权限</p>
             </div>
@@ -15,9 +15,9 @@
                 <p class="text-gray-500">暂无用户</p>
             </div>
             <div v-else class="divide-y divide-white/5">
-                <div v-for="user in usersList" :key="user.id" class="p-5 hover:bg-white/5 transition">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center space-x-4">
+                <div v-for="user in usersList" :key="user.id" class="p-4 hover:bg-white/5 transition md:p-5">
+                    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                        <div class="flex items-start space-x-4 sm:items-center">
                             <div :class="['w-12 h-12 rounded-xl flex items-center justify-center font-bold text-white', user.role === 'admin' ? 'bg-gradient-to-r from-amber-500 to-orange-500' : 'bg-white/10']">
                                 {{ user.username.charAt(0).toUpperCase() }}
                             </div>
@@ -32,7 +32,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="flex items-center space-x-3">
+                        <div class="flex items-center gap-3">
                             <button
                                 @click="openEditUserModal(user)"
                                 class="px-3 py-1.5 text-sm glass rounded-lg text-gray-300 hover:text-white transition"
@@ -54,14 +54,14 @@
 
         <!-- Edit User Modal -->
         <div v-if="showEditModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div class="glass rounded-2xl w-full max-w-md">
-                <div class="p-6 border-b border-white/10 flex items-center justify-between">
+            <div class="glass max-h-[90vh] w-full max-w-md overflow-y-auto rounded-2xl">
+                <div class="p-4 border-b border-white/10 flex items-center justify-between md:p-6">
                     <h3 class="font-bold text-xl text-white">编辑用户</h3>
                     <button @click="closeEditModal" class="text-gray-500 hover:text-white transition w-8 h-8 rounded-lg hover:bg-white/10 flex items-center justify-center">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
-                <div class="p-6 space-y-5">
+                <div class="p-4 space-y-5 md:p-6">
                     <div>
                         <label class="block text-sm font-medium text-gray-400 mb-2">用户名</label>
                         <input
@@ -112,7 +112,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="px-6 pb-6 border-t border-white/10 pt-5 flex justify-end space-x-3">
+                <div class="px-4 pb-4 border-t border-white/10 pt-5 flex justify-end space-x-3 md:px-6 md:pb-6">
                     <button
                         @click="closeEditModal"
                         class="px-5 py-2.5 text-gray-400 hover:text-white hover:bg-white/10 rounded-xl transition"
