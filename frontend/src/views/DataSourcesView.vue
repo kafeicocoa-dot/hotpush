@@ -70,12 +70,14 @@
                         <div class="flex items-center space-x-4">
                             <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500/10 to-red-500/10 flex items-center justify-center">
                                 <img
-                                    v-if="source.icon"
+                                    v-if="shouldShowImageIcon(source)"
                                     :src="source.icon"
                                     class="w-6 h-6 rounded"
-                                    @error="handleIconError"
+                                    @error="markIconFailed(source.id)"
                                 >
-                                <i v-else class="fas fa-rss text-gray-500"></i>
+                                <span v-else class="text-xl leading-none">
+                                    {{ getSourceFallbackIcon(source.id, source.name) }}
+                                </span>
                             </div>
                             <div>
                                 <div class="font-medium text-white">{{ source.name }}</div>
@@ -171,6 +173,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useApi } from '../composables/useApi'
 import { useToast } from '../composables/useToast'
 import { useConfirm } from '../composables/useConfirm'
+import { getSourceFallbackIcon, isImageIcon } from '../utils/sourceIcons'
 
 const { apiCall, currentUser } = useApi()
 const { showToast } = useToast()
@@ -183,6 +186,7 @@ const customSources = ref([])
 const showSourceModal = ref(false)
 const editingSource = ref(null)
 const sourceForm = ref({ id: '', name: '', url: '', category: '自定义', enabled: false })
+const failedIconSources = ref({})
 
 const isAdmin = computed(() => currentUser.value?.role === 'admin')
 
@@ -217,8 +221,12 @@ const fetchSources = async () => {
     }
 }
 
-const handleIconError = (e) => {
-    e.target.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23666"><rect width="24" height="24" rx="4"/></svg>'
+const shouldShowImageIcon = (source) => {
+    return isImageIcon(source?.icon) && !failedIconSources.value[source.id]
+}
+
+const markIconFailed = (sourceId) => {
+    failedIconSources.value = { ...failedIconSources.value, [sourceId]: true }
 }
 
 const openAddSourceModal = () => {

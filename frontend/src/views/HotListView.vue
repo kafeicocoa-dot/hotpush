@@ -94,12 +94,14 @@
                     <div class="flex items-center space-x-3">
                         <div class="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center">
                             <img 
-                                v-if="hotList.icon" 
+                                v-if="shouldShowImageIcon(hotList)" 
                                 :src="hotList.icon" 
                                 class="w-6 h-6 rounded"
-                                @error="$event.target.style.display='none'"
+                                @error="markIconFailed(hotList.source)"
                             >
-                            <i v-else class="fas fa-fire text-amber-400"></i>
+                            <span v-else class="text-xl leading-none">
+                                {{ getSourceFallbackIcon(hotList.source, hotList.source_name) }}
+                            </span>
                         </div>
                         <h3 class="font-semibold text-white text-sm">{{ hotList.source_name }}</h3>
                     </div>
@@ -134,28 +136,10 @@
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useApi } from '../composables/useApi'
 import { useAppStore } from '../stores/app'
+import { getSourceFallbackIcon, isImageIcon } from '../utils/sourceIcons'
 
 const { API_BASE, authToken, getHeaders } = useApi()
 const appStore = useAppStore()
-
-// Source icons mapping
-const sourceIcons = {
-    weibo: '🔥',
-    zhihu: '💡',
-    bilibili: '📺',
-    douyin: '🎵',
-    toutiao: '📰',
-    baidu: '🔍',
-    linuxdo: '🐧',
-    nodeseek: '🌐',
-    v2ex: '💻',
-    hackernews: '🔶',
-    juejin: '💎',
-    douban: '🎬',
-    sspai: '📱',
-    thepaper: '📋',
-    zaobao: '🌏'
-}
 
 // State
 const hotLists = ref([])
@@ -163,6 +147,7 @@ const failedSources = ref([])
 const loading = ref(false)
 const activeCategory = ref('全部')
 const fetchProgress = ref({ completed: 0, total: 0, success: 0 })
+const failedIconSources = ref({})
 let eventSource = null
 
 const categories = ['全部', '热搜榜', '技术', '科技资讯', '视频', '影视', '阅读', '新闻', '自定义']
@@ -206,11 +191,15 @@ const filteredHotLists = computed(() => {
     return hotLists.value.filter(h => sources.includes(h.source))
 })
 
-// Methods
-const getSourceIcon = (source) => {
-    return sourceIcons[source] || '📰'
+const shouldShowImageIcon = (hotList) => {
+    return isImageIcon(hotList?.icon) && !failedIconSources.value[hotList.source]
 }
 
+const markIconFailed = (source) => {
+    failedIconSources.value = { ...failedIconSources.value, [source]: true }
+}
+
+// Methods
 const fetchHotLists = () => {
     if (eventSource) {
         eventSource.close()

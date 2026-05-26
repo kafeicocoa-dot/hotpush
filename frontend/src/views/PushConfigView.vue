@@ -124,11 +124,14 @@
                                 </div>
                                 <div class="flex items-center space-x-2 min-w-0">
                                     <img
-                                        v-if="getSourceIcon(sourceId)"
+                                        v-if="shouldShowSourceImageIcon(sourceId)"
                                         :src="getSourceIcon(sourceId)"
                                         class="w-4 h-4 rounded flex-shrink-0"
-                                        @error="$event.target.style.display='none'"
+                                        @error="markSourceIconFailed(sourceId)"
                                     >
+                                    <span v-else class="w-4 flex-shrink-0 text-base leading-none">
+                                        {{ getSourceFallbackIcon(sourceId, getSourceName(sourceId)) }}
+                                    </span>
                                     <span :class="[
                                         'text-sm truncate',
                                         isSourceSelected(sourceId) ? 'text-white' : 'text-gray-400'
@@ -327,6 +330,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useApi } from '../composables/useApi'
 import { useToast } from '../composables/useToast'
 import { useAppStore } from '../stores/app'
+import { getSourceFallbackIcon, isImageIcon } from '../utils/sourceIcons'
 
 const { apiCall, currentUser } = useApi()
 const { showToast } = useToast()
@@ -348,6 +352,7 @@ const allSources = ref([])             // 所有可用数据源
 const categories = ref({})             // 分类信息
 const selectedSources = ref([])        // UI 中选中的数据源（始终使用显式列表）
 const originalSelectedSources = ref([])  // 保存前的原始值，用于检测变更
+const failedIconSources = ref({})
 
 const isAdmin = computed(() => currentUser.value?.role === 'admin')
 
@@ -539,6 +544,14 @@ const getSourceName = (sourceId) => {
 const getSourceIcon = (sourceId) => {
     const source = allSources.value.find(s => s.id === sourceId)
     return source ? source.icon : ''
+}
+
+const shouldShowSourceImageIcon = (sourceId) => {
+    return isImageIcon(getSourceIcon(sourceId)) && !failedIconSources.value[sourceId]
+}
+
+const markSourceIconFailed = (sourceId) => {
+    failedIconSources.value = { ...failedIconSources.value, [sourceId]: true }
 }
 
 const isSourceSelected = (sourceId) => {

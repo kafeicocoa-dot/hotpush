@@ -11,9 +11,9 @@
 详见：https://docs.rsshub.app/deploy/config
 """
 
-# 使用 Google Favicon 服务获取更可靠的图标
-def _icon(domain: str) -> str:
-    return f"https://www.google.com/s2/favicons?domain={domain}&sz=64"
+def _icon(source_id: str) -> str:
+    """使用前端内置图标，避免依赖外站 favicon。"""
+    return f"/icons/sources/{source_id}.png"
 
 # ============ 稳定源（无需额外配置）============
 HOT_SOURCES = {
@@ -21,19 +21,19 @@ HOT_SOURCES = {
     "weibo": {
         "name": "微博热搜",
         "route": "/weibo/search/hot",
-        "icon": _icon("weibo.com"),
+        "icon": _icon("weibo"),
         "category": "热搜榜"
     },
     "zhihu": {
         "name": "知乎热榜",
         "route": "/zhihu/hot",
-        "icon": _icon("zhihu.com"),
+        "icon": _icon("zhihu"),
         "category": "热搜榜"
     },
     "bilibili": {
         "name": "B站热搜",
         "route": "/bilibili/hot-search",
-        "icon": _icon("bilibili.com"),
+        "icon": _icon("bilibili"),
         "category": "视频"
     },
 
@@ -41,31 +41,31 @@ HOT_SOURCES = {
     "v2ex": {
         "name": "V2EX 热门",
         "route": "/v2ex/topics/hot",
-        "icon": _icon("v2ex.com"),
+        "icon": _icon("v2ex"),
         "category": "技术"
     },
     "hackernews": {
         "name": "Hacker News",
         "route": "/hackernews/best",
-        "icon": _icon("news.ycombinator.com"),
+        "icon": _icon("hackernews"),
         "category": "技术"
     },
     "juejin": {
         "name": "掘金热榜",
         "route": "/juejin/trending/all/weekly",
-        "icon": _icon("juejin.cn"),
+        "icon": _icon("juejin"),
         "category": "技术"
     },
     "linuxdo": {
         "name": "Linux DO",
         "route": "https://linux.do/latest.rss",
-        "icon": _icon("linux.do"),
+        "icon": _icon("linuxdo"),
         "category": "技术"
     },
     "nodeseek": {
         "name": "NodeSeek",
         "route": "https://rss.nodeseek.com",
-        "icon": _icon("nodeseek.com"),
+        "icon": _icon("nodeseek"),
         "category": "技术"
     },
 
@@ -73,7 +73,7 @@ HOT_SOURCES = {
     "sspai": {
         "name": "少数派",
         "route": "/sspai/index",
-        "icon": _icon("sspai.com"),
+        "icon": _icon("sspai"),
         "category": "科技资讯"
     },
 
@@ -81,13 +81,13 @@ HOT_SOURCES = {
     "douban_movie": {
         "name": "豆瓣热映",
         "route": "/douban/movie/playing",
-        "icon": _icon("douban.com"),
+        "icon": _icon("douban_movie"),
         "category": "影视"
     },
     "douban_book": {
         "name": "豆瓣新书",
         "route": "/douban/book/latest",
-        "icon": _icon("douban.com"),
+        "icon": _icon("douban_book"),
         "category": "阅读"
     },
 
@@ -95,13 +95,13 @@ HOT_SOURCES = {
     "zaobao": {
         "name": "联合早报",
         "route": "/zaobao/realtime/china",
-        "icon": _icon("zaobao.com"),
+        "icon": _icon("zaobao"),
         "category": "新闻"
     },
     "thepaper": {
         "name": "澎湃新闻",
         "route": "/thepaper/featured",
-        "icon": _icon("thepaper.cn"),
+        "icon": _icon("thepaper"),
         "category": "新闻"
     },
 }
