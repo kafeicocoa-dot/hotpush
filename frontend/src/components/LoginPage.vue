@@ -10,6 +10,13 @@
         </button>
 
         <div class="glass rounded-2xl p-8 w-full max-w-sm mx-4 relative z-10">
+            <RouterLink
+                to="/hotlist"
+                class="inline-flex items-center text-xs text-gray-500 hover:text-white transition mb-6"
+            >
+                <i class="fas fa-arrow-left mr-2"></i>返回热搜榜
+            </RouterLink>
+
             <div class="text-center mb-8">
                 <div class="inline-block animate-float">
                     <span class="text-5xl">🔥</span>

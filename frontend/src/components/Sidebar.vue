@@ -46,8 +46,8 @@
         </div>
 
         <!-- User Info -->
-        <div class="p-4 border-t border-white/5">
-            <div v-if="authStore.isAuthenticated" class="flex items-center justify-between">
+        <div v-if="authStore.isAuthenticated" class="p-4 border-t border-white/5">
+            <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-3">
                     <div class="w-9 h-9 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 flex items-center justify-center text-white font-bold text-sm">
                         {{ authStore.user?.username?.[0]?.toUpperCase() || 'U' }}
@@ -65,13 +65,6 @@
                     <i class="fas fa-sign-out-alt"></i>
                 </button>
             </div>
-            <button
-                v-else
-                @click="$emit('login')"
-                class="w-full py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-xl font-semibold hover:opacity-90 transition"
-            >
-                <i class="fas fa-sign-in-alt mr-2"></i>登录 / 注册
-            </button>
         </div>
 
         <!-- Footer -->
