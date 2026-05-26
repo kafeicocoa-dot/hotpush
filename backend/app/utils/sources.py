@@ -64,7 +64,7 @@ HOT_SOURCES = {
     },
     "nodeseek": {
         "name": "NodeSeek",
-        "route": "https://www.nodeseek.com/rss.xml",
+        "route": "https://rss.nodeseek.com",
         "icon": _icon("nodeseek.com"),
         "category": "技术"
     },
