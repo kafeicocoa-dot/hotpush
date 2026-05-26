@@ -27,6 +27,7 @@ PUBLIC_PATHS = [
     "/api/auth/login",
     "/api/auth/register",
     "/api/auth/check",
+    "/api/hot",  # 热搜榜公开访问
     "/api/stats",  # 统计信息公开访问
     "/api/trends",  # 趋势分析公开访问
     "/static",

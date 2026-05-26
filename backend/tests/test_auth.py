@@ -27,13 +27,14 @@ class TestPublicPaths:
     @pytest.mark.parametrize("path", [
         "/", "/health", "/docs", "/openapi.json",
         "/api/auth/login", "/api/auth/register", "/api/auth/check",
+        "/api/hot", "/api/hot/stream", "/api/hot/weibo",
         "/api/stats", "/static/main.js",
     ])
     def test_public_paths(self, path):
         assert is_public_path(path) is True
 
     @pytest.mark.parametrize("path", [
-        "/api/hot", "/api/push/test", "/api/config/channels",
+        "/api/push/test", "/api/config/channels",
         "/api/users", "/api/rules",
     ])
     def test_protected_paths(self, path):
@@ -43,7 +44,7 @@ class TestPublicPaths:
 class TestAuthEndpoints:
     @pytest.mark.asyncio
     async def test_protected_endpoint_without_token(self, client):
-        response = await client.get("/api/hot")
+        response = await client.get("/api/sources")
         assert response.status_code == 401
 
     @pytest.mark.asyncio

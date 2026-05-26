@@ -11,6 +11,9 @@ const PushHistoryView = () => import('../views/PushHistoryView.vue')
 const SchedulerView = () => import('../views/SchedulerView.vue')
 const UserManagementView = () => import('../views/UserManagementView.vue')
 
+// 登录页由 App.vue 独立渲染，这里只用于承载 /login 路由状态
+const LoginRoutePlaceholder = { render: () => null }
+
 const routes = [
     {
         path: '/',
@@ -20,7 +23,13 @@ const routes = [
         path: '/hotlist',
         name: 'hotlist',
         component: HotListView,
-        meta: { title: '热搜榜', subtitle: '实时聚合全网热点资讯', icon: 'fas fa-fire' }
+        meta: { title: '热搜榜', subtitle: '实时聚合全网热点资讯', icon: 'fas fa-fire', public: true }
+    },
+    {
+        path: '/login',
+        name: 'login',
+        component: LoginRoutePlaceholder,
+        meta: { title: '登录', public: true }
     },
     {
         path: '/sources',
@@ -72,8 +81,23 @@ const router = createRouter({
 })
 
 // 路由守卫
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
     const authStore = useAuthStore()
+
+    // 有本地 token 时先恢复登录态，避免刷新后误判为未登录
+    if (authStore.token && !authStore.isAuthenticated) {
+        await authStore.checkAuth()
+    }
+
+    if (to.name === 'login' && authStore.isAuthenticated) {
+        next('/hotlist')
+        return
+    }
+
+    if (!to.meta.public && !authStore.isAuthenticated) {
+        next({ path: '/login', query: { redirect: to.fullPath } })
+        return
+    }
 
     // 检查是否需要管理员权限
     if (to.meta.adminOnly && !authStore.isAdmin) {

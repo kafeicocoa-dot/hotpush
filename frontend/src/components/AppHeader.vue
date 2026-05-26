@@ -23,6 +23,14 @@
                 <i class="fas fa-sync-alt"></i>
                 <span>刷新</span>
             </button>
+            <button
+                v-if="showLogin"
+                @click="$emit('login')"
+                class="action-btn flex items-center space-x-2"
+            >
+                <i class="fas fa-sign-in-alt"></i>
+                <span>登录 / 注册</span>
+            </button>
         </div>
     </div>
 </template>
@@ -34,10 +42,11 @@ defineProps({
     viewTitle: String,
     viewSubtitle: String,
     lastUpdate: String,
-    showRefresh: { type: Boolean, default: false }
+    showRefresh: { type: Boolean, default: false },
+    showLogin: { type: Boolean, default: false }
 })
 
-defineEmits(['refresh'])
+defineEmits(['refresh', 'login'])
 
 const { isDarkMode, toggleDarkMode } = useTheme()
 </script>

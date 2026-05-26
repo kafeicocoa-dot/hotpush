@@ -1,12 +1,12 @@
 <template>
     <div :class="['gradient-bg min-h-screen text-white', !isDarkMode && 'light-mode']">
         <!-- Login Page -->
-        <LoginPage v-if="!authStore.isAuthenticated" @login-success="handleLoginSuccess" />
+        <LoginPage v-if="isLoginRoute" @login-success="handleLoginSuccess" />
 
         <!-- Main App -->
         <div v-else class="flex h-screen">
             <!-- Sidebar -->
-            <Sidebar @logout="handleLogout" />
+            <Sidebar @logout="handleLogout" @login="handleLoginClick" />
 
             <!-- Main Content -->
             <main class="flex-1 overflow-auto p-6">
@@ -16,7 +16,9 @@
                     :view-subtitle="currentRoute?.meta?.subtitle || ''"
                     :last-update="appStore.lastUpdate"
                     :show-refresh="currentRoute?.name === 'hotlist'"
+                    :show-login="!authStore.isAuthenticated"
                     @refresh="handleRefresh"
+                    @login="handleLoginClick"
                 />
 
                 <!-- Router View with Transition -->
@@ -97,6 +99,7 @@ const router = useRouter()
 
 // Computed
 const currentRoute = computed(() => route)
+const isLoginRoute = computed(() => route.name === 'login')
 
 // Provide stores to child components
 provide('authStore', authStore)
@@ -106,13 +109,20 @@ provide('appStore', appStore)
 const handleLoginSuccess = () => {
     showToast('登录成功', 'success')
     appStore.fetchStats()
-    router.push('/hotlist')
+    router.push(route.query.redirect || '/hotlist')
 }
 
 const handleLogout = () => {
     authStore.logout()
     showToast('已退出登录', 'success')
     router.push('/hotlist')
+}
+
+const handleLoginClick = () => {
+    router.push({
+        path: '/login',
+        query: { redirect: route.fullPath === '/login' ? '/hotlist' : route.fullPath }
+    })
 }
 
 const handleRefresh = () => {

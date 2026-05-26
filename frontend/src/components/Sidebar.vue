@@ -32,7 +32,7 @@
         </nav>
 
         <!-- Stats -->
-        <div class="p-4 border-t border-white/5">
+        <div v-if="authStore.isAuthenticated" class="p-4 border-t border-white/5">
             <div class="grid grid-cols-2 gap-2 text-center">
                 <div class="glass rounded-lg p-3">
                     <div class="text-lg font-bold text-white">{{ appStore.stats?.sources_count || 0 }}</div>
@@ -47,7 +47,7 @@
 
         <!-- User Info -->
         <div class="p-4 border-t border-white/5">
-            <div class="flex items-center justify-between">
+            <div v-if="authStore.isAuthenticated" class="flex items-center justify-between">
                 <div class="flex items-center space-x-3">
                     <div class="w-9 h-9 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 flex items-center justify-center text-white font-bold text-sm">
                         {{ authStore.user?.username?.[0]?.toUpperCase() || 'U' }}
@@ -65,6 +65,13 @@
                     <i class="fas fa-sign-out-alt"></i>
                 </button>
             </div>
+            <button
+                v-else
+                @click="$emit('login')"
+                class="w-full py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-xl font-semibold hover:opacity-90 transition"
+            >
+                <i class="fas fa-sign-in-alt mr-2"></i>登录 / 注册
+            </button>
         </div>
 
         <!-- Footer -->
@@ -84,7 +91,7 @@ import { useAppStore } from '../stores/app'
 
 // stats 直接从 appStore 获取，不再需要 props
 
-defineEmits(['logout'])
+defineEmits(['logout', 'login'])
 
 const route = useRoute()
 const authStore = useAuthStore()
@@ -107,6 +114,9 @@ const menuItems = [
 ]
 
 const visibleMenuItems = computed(() => {
+    if (!authStore.isAuthenticated) {
+        return menuItems.filter(item => item.path === '/hotlist')
+    }
     return menuItems.filter(item => !item.adminOnly || authStore.isAdmin)
 })
 
