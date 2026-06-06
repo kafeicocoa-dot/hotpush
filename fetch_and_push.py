@@ -44,7 +44,7 @@ STATE_FILE = ".github/hotpush_state.json"
 SLOT_WINDOWS = [
     ("morning", 9 * 60, 15),
     ("noon", 12 * 60, 15),
-    ("evening", 21 * 60 + 25, 15),
+    ("evening", 21 * 60, 15),
 ]
 
 
