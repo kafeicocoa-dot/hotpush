@@ -7,6 +7,7 @@ HotPush 热榜定时推送脚本
 import os
 import sys
 import json
+import subprocess
 import urllib.request
 import urllib.parse
 import re
@@ -39,6 +40,12 @@ SELECTED_SOURCES = os.environ.get("SELECTED_SOURCES", "")  # 留空则全部，�
 
 
 DEFAULT_USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
+STATE_FILE = ".github/hotpush_state.json"
+SLOT_WINDOWS = [
+    ("morning", 9 * 60, 15),
+    ("noon", 12 * 60, 15),
+    ("evening", 21 * 60 + 25, 15),
+]
 
 
 def http_request(url, method="GET", headers=None, data=None, timeout=30, no_proxy=False):
@@ -119,6 +126,77 @@ def format_beijing_time(include_time=True):
     if include_time:
         return f"{date_text} {now.hour:02d}:{now.minute:02d}"
     return date_text
+
+
+def get_beijing_now():
+    tz = timezone(timedelta(hours=8))
+    return datetime.now(tz)
+
+
+def get_current_slot(now=None):
+    now = now or get_beijing_now()
+    minute_of_day = now.hour * 60 + now.minute
+    for slot_name, start_minute, duration in SLOT_WINDOWS:
+        if start_minute <= minute_of_day < start_minute + duration:
+            return slot_name
+    return None
+
+
+def load_state():
+    if not os.path.exists(STATE_FILE):
+        return {}
+    try:
+        with open(STATE_FILE, "r", encoding="utf-8") as file:
+            return json.load(file)
+    except Exception:
+        return {}
+
+
+def save_state(state):
+    os.makedirs(os.path.dirname(STATE_FILE), exist_ok=True)
+    with open(STATE_FILE, "w", encoding="utf-8") as file:
+        json.dump(state, file, ensure_ascii=False, indent=2)
+        file.write("\n")
+
+
+def should_skip_for_slot():
+    now = get_beijing_now()
+    slot_name = get_current_slot(now)
+    if not slot_name:
+        return True, f"当前时间 {now.strftime('%H:%M')} 不在推送窗口内", None, None
+
+    today = now.strftime("%Y-%m-%d")
+    state = load_state()
+    if state.get(slot_name) == today:
+        return True, f"今日 {slot_name} 时段已推送，跳过重复发送", slot_name, state
+
+    return False, "", slot_name, state
+
+
+def mark_slot_sent(slot_name, state):
+    today = get_beijing_now().strftime("%Y-%m-%d")
+    state[slot_name] = today
+    save_state(state)
+
+
+def run_git_command(args):
+    subprocess.run(args, check=True)
+
+
+def persist_state_file():
+    if not os.environ.get("GITHUB_ACTIONS"):
+        return
+    try:
+        run_git_command(["git", "config", "user.name", "github-actions[bot]"])
+        run_git_command(["git", "config", "user.email", "41898282+github-actions[bot]@users.noreply.github.com"])
+        run_git_command(["git", "add", STATE_FILE])
+        diff_result = subprocess.run(["git", "diff", "--cached", "--quiet"])
+        if diff_result.returncode == 0:
+            return
+        run_git_command(["git", "commit", "-m", "chore: update hotpush schedule state"])
+        run_git_command(["git", "push"])
+    except Exception as e:
+        print(f"      ⚠️ 状态文件回写失败: {e}")
 
 
 def clean_text(value):
@@ -308,6 +386,11 @@ def main():
     print("HotPush 热榜推送任务开始")
     print("=" * 50)
 
+    skip, reason, slot_name, state = should_skip_for_slot()
+    if skip:
+        print(f"      ℹ️ {reason}")
+        return
+
     # 1. 登录
     print("[1/4] 正在登录 HotPush...")
     try:
@@ -338,6 +421,8 @@ def main():
     try:
         result = push_all(title, text_content)
         print(f"      ✅ {result}")
+        mark_slot_sent(slot_name, state)
+        persist_state_file()
     except Exception as e:
         print(f"      ❌ 推送失败: {e}")
         sys.exit(1)
