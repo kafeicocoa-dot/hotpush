@@ -142,6 +142,16 @@ def get_current_slot(now=None):
     return None
 
 
+def get_latest_due_slot(now=None):
+    now = now or get_beijing_now()
+    minute_of_day = now.hour * 60 + now.minute
+    due_slot = None
+    for slot_name, start_minute, _duration in SLOT_WINDOWS:
+        if minute_of_day >= start_minute:
+            due_slot = slot_name
+    return due_slot
+
+
 def load_state():
     if not os.path.exists(STATE_FILE):
         return {}
@@ -161,7 +171,14 @@ def save_state(state):
 
 def should_skip_for_slot():
     now = get_beijing_now()
-    slot_name = get_current_slot(now)
+    event_name = os.environ.get("GITHUB_EVENT_NAME", "")
+    if event_name in {"schedule", "workflow_dispatch"}:
+        slot_name = get_latest_due_slot(now)
+        if not slot_name:
+            return True, f"当前时间 {now.strftime('%H:%M')} 还没到今天首个推送时段", None, None
+    else:
+        slot_name = get_current_slot(now)
+
     if not slot_name:
         return True, f"当前时间 {now.strftime('%H:%M')} 不在推送窗口内", None, None
 
