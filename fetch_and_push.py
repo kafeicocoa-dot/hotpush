@@ -152,6 +152,23 @@ def get_latest_due_slot(now=None):
     return due_slot
 
 
+def get_due_slots(now=None):
+    now = now or get_beijing_now()
+    minute_of_day = now.hour * 60 + now.minute
+    today = now.strftime("%Y-%m-%d")
+    due_slots = []
+
+    if minute_of_day < SLOT_WINDOWS[0][1]:
+        yesterday = (now - timedelta(days=1)).strftime("%Y-%m-%d")
+        due_slots.append((SLOT_WINDOWS[-1][0], yesterday))
+
+    for slot_name, start_minute, _duration in SLOT_WINDOWS:
+        if minute_of_day >= start_minute:
+            due_slots.append((slot_name, today))
+
+    return due_slots
+
+
 def load_state():
     if not os.path.exists(STATE_FILE):
         return {}
@@ -172,27 +189,31 @@ def save_state(state):
 def should_skip_for_slot():
     now = get_beijing_now()
     event_name = os.environ.get("GITHUB_EVENT_NAME", "")
+    state = load_state()
     if event_name in {"schedule", "workflow_dispatch"}:
-        slot_name = get_latest_due_slot(now)
-        if not slot_name:
+        due_slots = get_due_slots(now)
+        if not due_slots:
             return True, f"当前时间 {now.strftime('%H:%M')} 还没到今天首个推送时段", None, None
+        for slot_name, slot_date in due_slots:
+            if state.get(slot_name) != slot_date:
+                return False, "", slot_name, state, slot_date
+        latest_slot_name, latest_slot_date = due_slots[-1]
+        return True, f"{latest_slot_date} 的 {latest_slot_name} 时段已推送，跳过重复发送", latest_slot_name, state, latest_slot_date
     else:
         slot_name = get_current_slot(now)
 
     if not slot_name:
-        return True, f"当前时间 {now.strftime('%H:%M')} 不在推送窗口内", None, None
+        return True, f"当前时间 {now.strftime('%H:%M')} 不在推送窗口内", None, None, None
 
     today = now.strftime("%Y-%m-%d")
-    state = load_state()
     if state.get(slot_name) == today:
-        return True, f"今日 {slot_name} 时段已推送，跳过重复发送", slot_name, state
+        return True, f"今日 {slot_name} 时段已推送，跳过重复发送", slot_name, state, today
 
-    return False, "", slot_name, state
+    return False, "", slot_name, state, today
 
 
-def mark_slot_sent(slot_name, state):
-    today = get_beijing_now().strftime("%Y-%m-%d")
-    state[slot_name] = today
+def mark_slot_sent(slot_name, state, slot_date):
+    state[slot_name] = slot_date
     save_state(state)
 
 
@@ -403,7 +424,7 @@ def main():
     print("HotPush 热榜推送任务开始")
     print("=" * 50)
 
-    skip, reason, slot_name, state = should_skip_for_slot()
+    skip, reason, slot_name, state, slot_date = should_skip_for_slot()
     if skip:
         print(f"      ℹ️ {reason}")
         return
@@ -438,7 +459,7 @@ def main():
     try:
         result = push_all(title, text_content)
         print(f"      ✅ {result}")
-        mark_slot_sent(slot_name, state)
+        mark_slot_sent(slot_name, state, slot_date)
         persist_state_file()
     except Exception as e:
         print(f"      ❌ 推送失败: {e}")

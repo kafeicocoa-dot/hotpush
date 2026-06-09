@@ -7,18 +7,8 @@ on:
       - fetch_and_push.py
       - .github/workflows/hotpush.yml
   schedule:
-    # 北京时间 08:06 (UTC+8 → UTC 00:06)
-    - cron: '6 0 * * *'
-    # 北京时间 08:16 补位触发 (UTC+8 → UTC 00:16)
-    - cron: '16 0 * * *'
-    # 北京时间 12:06 (UTC+8 → UTC 04:06)
-    - cron: '6 4 * * *'
-    # 北京时间 12:16 补位触发 (UTC+8 → UTC 04:16)
-    - cron: '16 4 * * *'
-    # 北京时间 21:06 (UTC+8 → UTC 13:06)
-    - cron: '6 13 * * *'
-    # 北京时间 21:16 补位触发 (UTC+8 → UTC 13:16)
-    - cron: '16 13 * * *'
+    # 每 15 分钟触发一次，具体是否推送由脚本按北京时间时段判定
+    - cron: '*/15 * * * *'
   workflow_dispatch:
 
 jobs:
