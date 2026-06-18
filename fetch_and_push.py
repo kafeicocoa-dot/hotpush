@@ -42,8 +42,8 @@ SELECTED_SOURCES = os.environ.get("SELECTED_SOURCES", "")  # 留空则全部，�
 DEFAULT_USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
 STATE_FILE = ".github/hotpush_state.json"
 SLOT_WINDOWS = [
-    ("morning", 6 * 60 + 6, 15),
-    ("noon", 11 * 60 + 36, 15),
+    ("morning", 5 * 60 + 6, 15),
+    ("noon", 11 * 60 + 6, 15),
     ("evening", 18 * 60 + 6, 15),
 ]
 
