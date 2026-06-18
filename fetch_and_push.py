@@ -193,7 +193,10 @@ def should_skip_for_slot():
     if event_name in {"schedule", "workflow_dispatch"}:
         due_slots = get_due_slots(now)
         if not due_slots:
-            return True, f"当前时间 {now.strftime('%H:%M')} 还没到今天首个推送时段", None, None
+            return True, f"当前时间 {now.strftime('%H:%M')} 还没到今天首个推送时段", None, None, None
+        if event_name == "workflow_dispatch":
+            slot_name, slot_date = due_slots[-1]
+            return False, "", slot_name, state, slot_date
         for slot_name, slot_date in due_slots:
             if state.get(slot_name) != slot_date:
                 return False, "", slot_name, state, slot_date
